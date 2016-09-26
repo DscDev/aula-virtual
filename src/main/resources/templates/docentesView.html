@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xlmns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head"></div>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<div class="contenido">
+			<ol class="breadcrumb">
+				<li><a th:href="@{/aula-virtual}">HOME</a></li>
+				<li><a th:text="${anio.descripcion}"
+					th:href="@{/aulavirtual/{idAnio}(idAnio=${anio})}"></a></li>
+				<li th:text="${asignatura.descripcion}" class="active"></li>
+			</ol>
+			<!-- 			<h1>
+				Bienvenido <span class="small" th:text="${session.usuario.usuario}"></span>
+			</h1> -->
+
+			<div class="carpeta alert alert-warning"
+				th:each="anioAsignaturaDocente : ${anioAsignaturaDocenteList}">
+				<span class="glyphicon glyphicon-folder-close"></span><a
+					th:text="${anioAsignaturaDocente.nombre}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente/{idDocente}/semana
+			(idAnio=${anioAsignaturaDocente.idAnio},
+			idAsignatura=${anioAsignaturaDocente.idAsignatura},
+			idDocente=${anioAsignaturaDocente.idDocente})}">
+				</a>
+			</div>
+		</div>
+		<div th:replace="fragments/footer"></div>
+	</div>
+</body>
+<div th:replace="fragments/scripts"></div>
+</html>
+

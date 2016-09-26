@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xlmns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head"></div>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<div class="contenido">
+			<ol class="breadcrumb">
+				<li><a th:href="@{/aula-virtual}">HOME</a></li>
+				<li><a th:text="${anio.descripcion}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura(idAnio=${anio.idAnio})}"></a></li>
+				<li><a th:text="${asignatura.descripcion}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente(idAnio=${anio.idAnio},idAsignatura=${asignatura.idAsignatura})}"></a></li>
+				<li><a th:text="${docente.nombre}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente/{idDocente}/semana(idAnio=${anio.idAnio},idAsignatura=${asignatura.idAsignatura},idDocente=${docente.idDocente})}"></a></li>
+				<li th:text="${semana.descripcion}" class="active"></li>
+			</ol>
+	
+			<div class="well text-right" th:if="${session.docente.idDocente == idDocente}">
+				<button id="btn-abrir-modal-agregar-archivo" class="btn btn-success">
+					<span class="glyphicon glyphicon-plus-sign"></span>Agregar
+				</button>
+			</div>
+
+			<!-- 			<div class="carpeta alert alert-info"
+				th:each="archivo : ${archivoList}">
+				<span class="glyphicon glyphicon glyphicon-save"></span> <a
+					th:text="${archivo.ruta}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente/{idDocente}/semana/{idSemana}/archivo/{idArchivo}
+					(idAnio=${archivo.id.idAnio},idAsignatura=${archivo.id.idAsignatura},idDocente=${archivo.id.idDocente},idSemana=${archivo.idSemana},idArchivo=${archivo.id.idArchivo})}">
+				</a> <a style="color: #FFF; font-size: 10px"
+					class="btn btn-sm btn-primary pull-right"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente/{idDocente}/semana/{idSemana}/archivo/{idArchivo}/eliminar
+					(idAnio=${archivo.id.idAnio},idAsignatura=${archivo.id.idAsignatura},idDocente=${archivo.id.idDocente},idSemana=${archivo.idSemana},idArchivo=${archivo.id.idArchivo})}">
+					<span class="glyphicon glyphicon glyphicon-trash"></span>
+				</a> <span></span>
+			</div> -->
+
+			<div id="listaFiles"></div>
+		</div>
+
+		<!-- MODALES -->
+
+		<!-- MODAL ELIMINAR ARCHIVO  -->
+
+		<div id="mdl-eliminar-archivo" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Eliminar archivo</h4>
+					</div>
+					<div class="modal-body">
+						<p>&iquest;Est&aacute; seguro de eliminar el archivo?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button id="btn-eliminar-archivo" type="button"
+							class="btn btn-primary">Eliminar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Modal Agregar archivo -->
+		<div id="mdl-agregar-archivo" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title">Subir archivo</h4>
+					</div>
+					<div class="modal-body">
+						<button class="btn btn-success" id="btn-elegir-archivo">
+							<span class="glyphicon glyphicon-folder-open"></span>Elegir
+							archivo
+						</button>
+						<div id="nombre-archivo" class="text-info"></div>
+						<input type="file" id="input-archivo" class="hidden" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button id="btn-guardar-archivo" type="button"
+							class="btn btn-success">
+							<span class="glyphicon glyphicon-floppy-disk"></span>Guardar
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div th:replace="fragments/footer"></div>
+	</div>
+</body>
+<div th:replace="fragments/scripts"></div>
+<script th:inline="javascript">
+/*<![CDATA[*/
+function route(){
+	return window.location.origin+[[@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente/{idDocente}/semana/{idSemana}/archivo/
+	(idAnio=${anio.idAnio},idAsignatura=${asignatura.idAsignatura},idDocente=${docente.idDocente},idSemana=${semana.idSemana})}]];
+}
+
+var global = {
+		'idAnio' : [[${anio.idAnio}]],
+		'idAsignatura' : [[${asignatura.idAsignatura}]],
+		'idDocente' : [[${docente.idDocente}]],
+		'idSemana' : [[${semana.idSemana}]],
+		'idArchivo' : '',
+		'listaArchivos': ''
+};
+
+var sesion = {
+		'idDocente' : [[${session.docente.idDocente}]]
+}
+
+function abrirModalEliminarArchivo(idArchivo){
+	global.idArchivo = idArchivo
+	$("#mdl-eliminar-archivo").modal('show');
+}
+
+$(function(){
+
+	$("#btn-elegir-archivo").click(function(){
+		$("#input-archivo").click();
+		});
+
+	$("#input-archivo").change(function(){
+		var archivo = $("#input-archivo")[0].files[0];
+		$("#nombre-archivo").html("<br/><div class='well'><span class='text-primary'>"+archivo.name+"</span></div>");
+		});
+
+	$.ajax({
+		  method: "POST",
+		  url: route()+"/json"
+		})
+		  .done(function( respuesta ) {
+		    console.log(respuesta);
+		    actualizarListaFiles(respuesta);
+		  });
+
+	function actualizarListaFiles(respuesta){
+
+		global.listaArchivos = respuesta;
+		$("#listaFiles").html('');
+		$.each(respuesta, function(index, obj){
+				var html = '';
+				if(global.idDocente == sesion.idDocente){	
+					html = "<div class='carpeta alert alert-info'><span class='glyphicon glyphicon glyphicon-save'></span><a href="+ route() + obj.id.idArchivo +">"+obj.ruta+"</a><button class='btn btn-sm btn-primary pull-right' style='font-size:10px;' onclick=abrirModalEliminarArchivo("+obj.id.idArchivo+")><span class='glyphicon glyphicon-trash'></span></button><div>";
+				}else {	
+					html = "<div class='carpeta alert alert-info'><span class='glyphicon glyphicon glyphicon-save'></span><a href="+ route() + obj.id.idArchivo +">"+obj.ruta+"</a><div>";
+					}
+				$("#listaFiles").append(html);
+				
+			})
+		}
+
+	$("#btn-eliminar-archivo").click(function(){
+
+		$.ajax({
+			  method: "POST",
+			  url: route()+"/"+global.idArchivo+"/eliminar"
+			})
+			  .done(function( respuesta ) {
+				  $("#mdl-eliminar-archivo").modal('hide');
+				  
+					$.ajax({
+						  method: "POST",
+						  url: route()+"/json"
+						})
+						  .done(function( respuesta ) {
+						    actualizarListaFiles(respuesta);
+						  });
+					})
+			    toastr["success"](respuesta.mensaje);
+			  });
+
+	$("#btn-abrir-modal-agregar-archivo").click(function(){
+
+		$("#mdl-agregar-archivo").modal('show');
+		
+		});
+		
+	$("#btn-guardar-archivo").click(function(){
+
+		var archivo = $("#input-archivo")[0].files[0];
+		var formData = new FormData();
+		formData.append("archivo",archivo);
+/* 		formData.append("idAnio",global.idAnio);
+		formData.append("idAsignatura",global.idAsignatura);
+		formData.append("idDocente",global.idDocente);
+		formData.append("idSemana",global.idSemana); */
+		
+		$.ajax({
+			method: "POST",
+			url: route()+"/agregar",
+			data: formData,
+			cache:false,
+			contentType:false,
+			processData:false,
+			})
+				.done(function(){
+					
+					$("#mdl-agregar-archivo").modal('hide');
+					  
+					$.ajax({
+						  method: "POST",
+						  url: route()+"/json"
+						})
+						  .done(function( respuesta ) {
+						    actualizarListaFiles(respuesta);
+						  });
+
+					});
+
+		
+		});
+})
+/*]]>*/
+</script>
+</html>
+

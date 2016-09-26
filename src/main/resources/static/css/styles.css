@@ -1,0 +1,94 @@
+@CHARSET "UTF-8";
+
+/*  
+** 
+** GENERAL
+**
+*/
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+.container {
+	padding: 0;
+	background: #F4F7F5;
+	min-height: 100%;
+	position: relative;
+}
+
+.glyphicon{
+	margin-right:5px;
+}
+
+.contenido {
+	padding: 50px;
+}
+
+.footer {
+	position: absolute;
+	width: 100%;
+	height: 35px;
+	text-align: center;
+	background: rgba(0, 0, 0, 0.1);
+	padding: 5px;
+	bottom: 0;
+	text-align: center;
+}
+
+/*  
+** 
+** LOGIN - VIEW
+**
+*/
+#formulario-login {
+	width: 50%;
+	margin: auto;
+	margin-top: 25vh;
+}
+
+div.eleccion {
+	margin-top: 30vh;
+	text-align: center;
+}
+
+div.eleccion div {
+	color: #FFF;
+	display: inline-block;
+}
+
+div.eleccion div.elige {
+	font-size: 36px;
+	border-radius: 10px;
+	padding: 30px; /* 
+	background: #009587; */
+}
+
+div.eleccion div.soy-docente button, div.eleccion div.soy-invitado button
+	{
+	font-size: 36px;
+	border-radius: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	border-radius: 10px;
+}
+
+/*  
+** 
+** RESTO - VIEW
+**
+*/
+.contenido div.alert {
+	
+}
+
+.carpeta {
+	
+}
+
+.carpeta a, .carpeta a:visited, .carpeta a:hover, carpeta a:focus,
+	carpeta a:active {
+	text-decoration: none;
+	color: #000;
+}

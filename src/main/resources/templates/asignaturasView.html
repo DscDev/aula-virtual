@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xlmns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head"></div>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<div class="contenido">
+			<ol class="breadcrumb">
+				<li><a th:href="@{/aula-virtual}">HOME</a></li>
+				<li th:text="${anio.descripcion}" class="active">1er a&ntilde;o</li>
+			</ol>
+			<div class="carpeta alert alert-warning"
+				th:each="anioAsignatura : ${anioAsignaturaList}">
+				<span class="glyphicon glyphicon-folder-close"></span> <a
+					th:text="${anioAsignatura.descripcion}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente
+			(idAnio=${anioAsignatura.idAnio} ,idAsignatura=${anioAsignatura.idAsignatura})}">
+				</a>
+			</div>
+		</div>
+		<div th:replace="fragments/footer"></div>
+	</div>
+</body>
+<div th:replace="fragments/scripts"></div>
+</html>
+

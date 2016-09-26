@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xlmns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head"></div>
+<body>
+	<div class="container">
+		<div th:replace="fragments/header"></div>
+		<div class="contenido">
+			<ol class="breadcrumb">
+				<li><a th:href="@{/aula-virtual}">HOME</a></li>
+				<li><a th:text="${anio.descripcion}" th:href="@{/aula-virtual/{idAnio}/asignatura(idAnio=${anio.idAnio})}"></a></li>
+				<li><a th:text="${asignatura.descripcion}" th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente(idAnio=${anio.idAnio},idAsignatura=${asignatura.idAsignatura})}"></a></li>
+				<li th:text="${docente.nombre}" class="active"></li>
+			</ol>
+			<div class="carpeta alert alert-warning"
+				th:each="semana : ${semanaList}">
+				<span class="glyphicon glyphicon-folder-close"></span> <a class=""
+					th:text="${semana.descripcion}"
+					th:href="@{/aula-virtual/{idAnio}/asignatura/{idAsignatura}/docente/{idDocente}/semana/{idSemana}/archivo
+						(idAnio=${anio.idAnio},idAsignatura=${asignatura.idAsignatura},idDocente=${docente.idDocente},idSemana=${semana.idSemana})}">
+					<span class="glyphicon glyphicon-folder-close"></span>
+				</a>
+
+			</div>
+		</div>
+		<div th:replace="fragments/footer"></div>
+	</div>
+</body>
+<div th:replace="fragments/scripts"></div>
+</html>
+

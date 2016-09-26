@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xlmns:th="http://www.thymeleaf.org">
+<div th:replace="fragments/head"></div>
+<body>
+	<div class="container">
+
+		<div th:replace="fragments/header"></div>
+
+		<div class="contenido">
+			<div class="eleccion">
+				<div class="soy-docente">
+					<button id="soy-docente" class="btn btn-primary">Soy
+						Docente</button>
+				</div>
+				<div class="elige alert alert-info" role="alert">ELIGE</div>
+				<div class="soy-invitado">
+					<a th:href="@{/aula-virtual/login/invitado}" id="soy-invitado" class="btn btn-primary">Soy
+						Invitado</a>
+				</div>
+			</div>
+
+			<div id="formulario-login" class=" panel panel-info"
+				style="display: none">
+				<div class="panel-heading">INICIAR SESI&Oacute;N</div>
+				<form action="/aula-virtual/login/validar" method="post"
+					class="panel-body">
+					<div th:if="${mensaje}">
+						<div class="alert alert-danger alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<span th:text="${mensaje}"></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="usuario">Usuario</label> <input type="text"
+							name="usuario" class="form-control" id="usuario"
+							placeholder="Usuario" required="required" />
+					</div>
+					<div class="form-group">
+						<label for="password">Clave</label> <input type="password"
+							name="password" class="form-control" id="password"
+							placeholder="Clave" required="required" />
+					</div>
+					<button type="submit" class="btn btn-primary">Ingresar</button>
+				</form>
+			</div>
+		</div>
+
+		<div th:replace="fragments/footer"></div>
+
+	</div>
+</body>
+<div th:replace="fragments/scripts"></div>
+<script>
+$(function(){
+	$("#soy-docente").click(function(){
+			$(".eleccion").fadeOut();
+			setTimeout(function(){
+				$("#formulario-login").fadeIn();
+				},500)
+		});
+});
+</script>
+</html>
